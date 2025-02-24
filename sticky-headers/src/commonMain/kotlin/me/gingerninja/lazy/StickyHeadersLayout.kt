@@ -105,7 +105,6 @@ fun <T : Any> StickyHeadersLayout(
 
                             val nextOffset =
                                 layoutInfoProvider.itemOffsetAt(interval.endIndex, orientation)
-                                    ?: Int.MAX_VALUE
                             val itemOffset =
                                 layoutInfoProvider.itemOffsetAt(interval.startIndex, orientation)
 
@@ -122,10 +121,15 @@ fun <T : Any> StickyHeadersLayout(
                                 // don't show the item if it's not visible anymore
                                 alpha = 0f
                             } else {
-                                val diff = nextOffset - spacing + beforePadding - stickyPadding
+                                val diff = nextOffset
+                                    ?.let { it - spacing + beforePadding - stickyPadding }
 
                                 if (orientation == Orientation.Vertical) {
-                                    val y = (diff - size.height).coerceAtMost(0f)
+                                    val y = diff
+                                        ?.let { it - size.height }
+                                        ?.coerceAtMost(0f)
+                                        ?: 0f
+
                                     val offset =
                                         (itemOffset + beforePadding).coerceAtLeast(0)
 
@@ -133,7 +137,11 @@ fun <T : Any> StickyHeadersLayout(
 
                                     translationY = (offset + y + inset) * direction
                                 } else {
-                                    val x = (diff - size.width).coerceAtMost(0f)
+                                    val x = diff
+                                        ?.let { it - size.width }
+                                        ?.coerceAtMost(0f)
+                                        ?: 0f
+
                                     val offset =
                                         (itemOffset + beforePadding).coerceAtLeast(0)
 
