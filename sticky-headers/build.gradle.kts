@@ -1,5 +1,4 @@
 import com.vanniktech.maven.publish.SonatypeHost
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -19,45 +18,6 @@ kotlin {
     androidTarget {
         publishLibraryVariants("release")
     }
-
-    js(compiler = IR) {
-        //nodejs()
-        //browser()
-        browser {
-            webpackTask {
-                mainOutputFileName = "lazy-sticky-headers.js"
-            }
-        }
-        binaries.executable()
-    }
-    // Kotlin/Wasm drawing to a canvas
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        //nodejs()
-        browser()
-        binaries.library()
-    }
-    // Building and publishing for iOS target requires a machine running macOS;
-    // otherwise, the .klib will not be produced and the compiler warns about that.
-    // See https://kotlinlang.org/docs/multiplatform-mobile-understand-project-structure.html#ios-framework
-    listOf(
-        // By declaring these targets, the iosMain source set will be created automatically
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "lazy-sticky-headers"
-            isStatic = true
-        }
-    }
-
-    /*iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    linuxX64()
-    mingwX64()
-    macosArm64()*/
 
     sourceSets {
         val commonMain by getting {
