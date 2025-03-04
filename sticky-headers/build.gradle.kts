@@ -1,3 +1,4 @@
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     //id("module.publication")
     alias(libs.plugins.dokka)
+    alias(libs.plugins.nexusPlugin)
 }
 
 version = "0.1.0-alpha04"
@@ -73,6 +75,49 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEa
 tasks.withType<JavaCompile>().configureEach {
     this.targetCompatibility = libs.versions.jvmTarget.get()
     this.sourceCompatibility = libs.versions.jvmTarget.get()
+}
+
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.S01)
+
+    coordinates("me.gingerninja.lazy", "sticky-headers", version.toString())
+
+    pom {
+        name = "Lazy Sticky Headers"
+        description = "Lazy Sticky Headers for Compose Multiplatform"
+        inceptionYear = "2024"
+        url = "https://github.com/gregkorossy/lazy-sticky-headers/"
+
+        licenses {
+            license {
+                name = "The Apache Software License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "repo"
+            }
+        }
+        developers {
+            developer {
+                id = "gregkorossy"
+                name = "Gergely Kőrössy"
+                url = "https://github.com/gregkorossy/"
+            }
+        }
+        scm {
+            url = "https://github.com/gregkorossy/lazy-sticky-headers/"
+            connection = "scm:git:git://github.com/gregkorossy/lazy-sticky-headers.git"
+            developerConnection = "scm:git:ssh://git@github.com/gregkorossy/lazy-sticky-headers.git"
+        }
+        issueManagement {
+            system = "GitHub"
+            url = "https://github.com/gregkorossy/lazy-sticky-headers/issues"
+        }
+        ciManagement {
+            system = "GitHub Actions"
+            url = "https://github.com/gregkorossy/lazy-sticky-headers/actions"
+        }
+    }
+
+    signAllPublications()
 }
 
 /*kotlin {

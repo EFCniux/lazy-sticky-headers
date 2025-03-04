@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.kotlinBinaryCompatibilityValidator)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.nexusPlugin)
     alias(libs.plugins.spotless)
 }
 
