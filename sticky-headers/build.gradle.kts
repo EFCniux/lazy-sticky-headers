@@ -1,7 +1,6 @@
 import com.vanniktech.maven.publish.SonatypeHost
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -116,10 +115,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEa
 tasks.withType<JavaCompile>().configureEach {
     this.targetCompatibility = libs.versions.jvmTarget.get()
     this.sourceCompatibility = libs.versions.jvmTarget.get()
-}
-
-tasks.withType<DokkaTask>().configureEach {
-    notCompatibleWithConfigurationCache("https://github.com/Kotlin/dokka/issues/2231")
 }
 
 mavenPublishing {
