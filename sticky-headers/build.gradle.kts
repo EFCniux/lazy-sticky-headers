@@ -117,7 +117,7 @@ mavenPublishing {
         }
     }
 
-    signAllPublications()
+    // signAllPublications()
 }
 
 /*kotlin {
