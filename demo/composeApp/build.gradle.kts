@@ -1,9 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.binaryen.BinaryenExec
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -13,44 +10,11 @@ plugins {
 }
 
 kotlin {
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        // needed as per https://youtrack.jetbrains.com/issue/KT-68614
-        val rootDirPath = project.rootDir.path
-
-        moduleName = "composeApp"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        //add(project.projectDir.path)
-                        add(rootDirPath)
-                    }
-                }
-            }
-        }
-        binaries.executable()
-    }
-
+    jvm(name = "desktop")
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
-
-    jvm("desktop")
-
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            isStatic = true
         }
     }
 
@@ -139,15 +103,3 @@ compose.desktop {
         }
     }
 }
-
-// FIXME remove it once the binaryen issue is fixed
-// - https://github.com/WebAssembly/binaryen/issues/6710
-// - https://youtrack.jetbrains.com/issue/KT-68088/
-tasks.named<BinaryenExec>("compileProductionExecutableKotlinWasmJsOptimize") {
-    binaryenArgs = mutableListOf("-O1", "--all-features")
-    // enabled = false
-}
-
-/* Commands
- * - build Wasm prod: wasmJsBrowserProductionWebpack
- */
